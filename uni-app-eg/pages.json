@@ -7,12 +7,14 @@
 				"navigationBarTitleText": "内置组件",
 				"app-plus": {
 					"bounce": "vertical",
-					"titleNView": {
+					// 配置编译到 H5 平台时的特定样式
+					"titleNView": { //导航栏
 						"buttons": [{
-							"text": "\ue534",
-							"fontSrc": "/static/uni.ttf",
+							"type":"close",//按钮类型是非none的情况下，不能设置text和fontSrc
+							// "text": "\ue534",
+							// "fontSrc": "/static/uni.ttf",
 							"fontSize": "22px",
-							"color": "#999999"
+							"color": "#333"
 						}]
 					}
 				}

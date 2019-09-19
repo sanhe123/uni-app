@@ -15,7 +15,7 @@ Vue.prototype.$backgroundAudioData = {
 	formatedPlayTime: '00:00:00'
 }
 
-Vue.component('page-head', pageHead)
+Vue.component('page-head', pageHead) //全局注册page-head组件
 Vue.component('page-foot', pageFoot)
 Vue.component('uLink', uLink)
 
@@ -25,4 +25,11 @@ const app = new Vue({
 	store,
 	...App
 })
-app.$mount()
+app.$mount()//挂载Vue实例
+
+/**
+ * 注意事项：
+ * 
+ * 无法使用vue-router，路由须在pages.json中进行配置。
+ * nvue 暂不支持在 main.js 注册全局组件
+ */
