@@ -10,7 +10,7 @@ function checkLogin(backPage,backType){
 	let SNAME = uni.getStorageSync('SNAME');//name
 	let SFACE = uni.getStorageSync('SFACE');//face
 	if(SUID == '' || SRAND == '' || SNAME == '' || SFACE == ''){
-		//重定向页面
+		//重定向到登录页面
 		uni.redirectTo({
 			url:"../login/login?backPage="+backPage+"&backType="+backType
 		})
@@ -18,9 +18,30 @@ function checkLogin(backPage,backType){
 	}
 	return [SUID,SRAND,SNAME,SFACE];
 }
+
 var APITOKEN = 'api2018';
-var apiServer = 'http://192.163.1.180/index.php?token='+APITOKEN+"&c=";
+var apiServer = 'http://192.168.1.180/index.php?token='+APITOKEN+"&c=";
+
+function postRequest({url,method,data,callBack}){
+	uni.request({
+		url: apiServer + url,
+		method: 'POST',
+		header: {'content-type' : "application/x-www-form-urlencoded"},
+		data: data,
+		success: res => {
+			res = res.data;
+			if(res.status === 'ok'){
+				callBack(res.data);
+			}else{
+				callBack(res.error);
+			}
+		}
+	}); 
+}
+
+
 module.exports ={
 	checkLogin:checkLogin,
-	apiServer:apiServer
+	apiServer:apiServer,
+	postRequest:postRequest
 }

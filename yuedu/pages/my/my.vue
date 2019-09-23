@@ -5,6 +5,7 @@
 </template>
 
 <script>
+	var loginRes;
 	export default {
 		data() {
 			return {

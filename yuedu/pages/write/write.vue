@@ -5,7 +5,7 @@
 </template>
 
 <script>
-	let loginRes;
+	var loginRes;
 	export default {
 		data() {
 			return {

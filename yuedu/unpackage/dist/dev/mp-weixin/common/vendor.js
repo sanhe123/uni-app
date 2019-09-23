@@ -1,8 +1,8 @@
 (global["webpackJsonp"] = global["webpackJsonp"] || []).push([["common/vendor"],[
 /* 0 */
-/*!*****************************!*\
-  !*** E:/self/yuedu/main.js ***!
-  \*****************************/
+/*!*************************************!*\
+  !*** E:/self/uni-app/yuedu/main.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16,6 +16,7 @@ var _tool = __webpack_require__(/*! ./common/js/tool.js */ 11);function _interop
 _vue.default.config.productionTip = false;
 _vue.default.prototype.checkLogin = _tool.checkLogin;
 _vue.default.prototype.apiServer = _tool.apiServer;
+_vue.default.prototype.$post = _tool.postRequest;
 _App.default.mpType = 'app';
 
 var app = new _vue.default(_objectSpread({},
@@ -758,7 +759,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -6962,7 +6963,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -6983,14 +6984,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -7066,7 +7067,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -7473,9 +7474,9 @@ module.exports = g;
 
 /***/ }),
 /* 4 */
-/*!********************************!*\
-  !*** E:/self/yuedu/pages.json ***!
-  \********************************/
+/*!****************************************!*\
+  !*** E:/self/uni-app/yuedu/pages.json ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7595,9 +7596,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 11 */
-/*!***************************************!*\
-  !*** E:/self/yuedu/common/js/tool.js ***!
-  \***************************************/
+/*!***********************************************!*\
+  !*** E:/self/uni-app/yuedu/common/js/tool.js ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7614,7 +7615,7 @@ function checkLogin(backPage, backType) {
   var SNAME = uni.getStorageSync('SNAME'); //name
   var SFACE = uni.getStorageSync('SFACE'); //face
   if (SUID == '' || SRAND == '' || SNAME == '' || SFACE == '') {
-    //重定向页面
+    //重定向到登录页面
     uni.redirectTo({
       url: "../login/login?backPage=" + backPage + "&backType=" + backType });
 
@@ -7622,18 +7623,39 @@ function checkLogin(backPage, backType) {
   }
   return [SUID, SRAND, SNAME, SFACE];
 }
+
 var APITOKEN = 'api2018';
-var apiServer = 'http://192.163.1.180/index.php?token=' + APITOKEN + "&c=";
+var apiServer = 'http://192.168.1.180/index.php?token=' + APITOKEN + "&c=";
+
+function postRequest(_ref) {var url = _ref.url,method = _ref.method,data = _ref.data,callBack = _ref.callBack;
+  uni.request({
+    url: apiServer + url,
+    method: 'POST',
+    header: { 'content-type': "application/x-www-form-urlencoded" },
+    data: data,
+    success: function success(res) {
+      res = res.data;
+      if (res.status === 'ok') {
+        callBack(res.data);
+      } else {
+        callBack(res.error);
+      }
+    } });
+
+}
+
+
 module.exports = {
   checkLogin: checkLogin,
-  apiServer: apiServer };
+  apiServer: apiServer,
+  postRequest: postRequest };
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 /* 12 */
-/*!**************************************************************!*\
-  !*** E:/self/yuedu/main.js?{"page":"pages%2Findex%2Findex"} ***!
-  \**************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/self/uni-app/yuedu/main.js?{"page":"pages%2Findex%2Findex"} ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7652,9 +7674,9 @@ createPage(_index.default);
 /* 16 */,
 /* 17 */,
 /* 18 */
-/*!**************************************************************!*\
-  !*** E:/self/yuedu/main.js?{"page":"pages%2Fwrite%2Fwrite"} ***!
-  \**************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/self/uni-app/yuedu/main.js?{"page":"pages%2Fwrite%2Fwrite"} ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7673,9 +7695,9 @@ createPage(_write.default);
 /* 22 */,
 /* 23 */,
 /* 24 */
-/*!********************************************************!*\
-  !*** E:/self/yuedu/main.js?{"page":"pages%2Fmy%2Fmy"} ***!
-  \********************************************************/
+/*!****************************************************************!*\
+  !*** E:/self/uni-app/yuedu/main.js?{"page":"pages%2Fmy%2Fmy"} ***!
+  \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7694,9 +7716,9 @@ createPage(_my.default);
 /* 28 */,
 /* 29 */,
 /* 30 */
-/*!**************************************************************!*\
-  !*** E:/self/yuedu/main.js?{"page":"pages%2Flogin%2Flogin"} ***!
-  \**************************************************************/
+/*!**********************************************************************!*\
+  !*** E:/self/uni-app/yuedu/main.js?{"page":"pages%2Flogin%2Flogin"} ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
