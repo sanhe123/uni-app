@@ -115,6 +115,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+var sign = __webpack_require__(/*! ../../common/js/sign.js */ 40);
 var session_key, openid;var _default =
 {
   data: function data() {
@@ -126,11 +127,11 @@ var session_key, openid;var _default =
   },
   onLoad: function onLoad(options) {
     var _this = this;
-    //微信
+    sign.sign(this.apiServer);
+    //小程序端
 
     uni.login({
       success: function success(res) {
-        console.log('code' + res.code);
         uni.request({
           url: _this.apiServer + 'member&m=codeToSession&code=' + res.code,
           method: 'GET',
@@ -165,6 +166,7 @@ var session_key, openid;var _default =
     //app端获取用户信息
     getUserInfo_APP: function getUserInfo_APP() {
       var _this = this;
+      var sign = uni.getStorageSync('sign');
       // 获取用户信息
       uni.getUserInfo({
         provider: 'weixin',
@@ -176,7 +178,8 @@ var session_key, openid;var _default =
             data: {
               openid: _this.userInfo.openId,
               name: _this.userInfo.nickName,
-              face: _this.userInfo.avatarUrl },
+              face: _this.userInfo.avatarUrl,
+              sign: sign },
 
             callBack: function callBack(data) {
               uni.showToast({
@@ -204,13 +207,14 @@ var session_key, openid;var _default =
     },
     getuserinfo: function getuserinfo(info) {
       var _this = this;
-      console.log(info);
+      var sign = uni.getStorageSync('sign');
       _this.$post({
         url: 'member&m=login',
         data: {
           openid: openid,
           name: info.detail.userInfo.nickName,
-          face: info.detail.userInfo.avatarUrl },
+          face: info.detail.userInfo.avatarUrl,
+          sign: sign },
 
         callBack: function callBack(data) {
           console.log(data);

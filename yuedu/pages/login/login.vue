@@ -8,6 +8,7 @@
 </template>
 
 <script>
+	var sign = require('../../common/js/sign.js');
 	var session_key,openid;
 export default {
 	data() {
@@ -19,11 +20,11 @@ export default {
 	},
 	onLoad(options) {
 		let _this = this;
-		//微信
+		sign.sign(this.apiServer);
+		//小程序端
 		// #ifdef MP-WEIXIN
 		uni.login({
 			success:function(res){
-				console.log('code'+res.code);
 				uni.request({
 					url: _this.apiServer+'member&m=codeToSession&code='+res.code,
 					method: 'GET',
@@ -58,6 +59,7 @@ export default {
 		//app端获取用户信息
 		getUserInfo_APP(){
 			let _this = this;
+			var sign = uni.getStorageSync('sign');
 			// 获取用户信息
 			uni.getUserInfo({
 				provider: 'weixin',
@@ -69,7 +71,8 @@ export default {
 						data: {
 							openid: _this.userInfo.openId,
 							name: _this.userInfo.nickName,
-							face: _this.userInfo.avatarUrl
+							face: _this.userInfo.avatarUrl,
+							sign: sign
 						},
 						callBack: function(data) {
 							uni.showToast({
@@ -97,13 +100,14 @@ export default {
 		},
 		getuserinfo(info){
 			var _this = this;
-			console.log(info)
+			var sign = uni.getStorageSync('sign');
 			_this.$post({
 				url: 'member&m=login',
 				data: {
 					openid: openid,
 					name: info.detail.userInfo.nickName,
-					face: info.detail.userInfo.avatarUrl
+					face: info.detail.userInfo.avatarUrl,
+					sign:	sign
 				},
 				callBack: function(data) {
 					console.log(data)

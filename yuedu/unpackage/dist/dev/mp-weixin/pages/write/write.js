@@ -67,13 +67,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-}
+var render = function () {}
 var staticRenderFns = []
-render._withStripped = true
 
 
 
@@ -103,25 +98,266 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
 //
 //
 
-var loginRes;var _default =
+var loginRes, _self;
+var signModel = __webpack_require__(/*! ../../common/js/sign.js */ 40);var _default =
 {
   data: function data() {
-    return {};
-
+    return {
+      title: '',
+      artList: [],
+      inputContent: '',
+      needUploadImg: [],
+      uploadIndex: 0,
+      //分类
+      caties: ['点击选择'],
+      currentCateIndex: 0,
+      catiesFromApi: [], //存储接口请求分类数据
+      // 记录真实选择的api接口数据的分类id
+      sedCateIndex: 0 };
 
   },
   onLoad: function onLoad() {
+    _self = this;
     loginRes = this.checkLogin('../write/write', 2);
-    if (!loginRes) {return;}
+    if (!loginRes) {
+      return;
+    }
+    // 加载文章分类
+    uni.request({
+      url: this.apiServer + 'category&m=index',
+      method: 'GET',
+      success: function success(res) {
+        if (res.data.status == 'ok') {
+          // 把数据格式整理为 picker 支持的格式 ['分类名', ...]
+          var categories = res.data.data;
+          for (var k in categories) {
+            _self.caties.push(categories[k]);
+          }
+          // 记录分类信息
+          _self.catiesFromApi = categories;
+        }
+      } });
+
   },
-  methods: {} };exports.default = _default;
+  methods: {
+    //添加文本数据
+    submit: function submit(res) {
+      console.log(res);
+      var content = res.detail.value.artText;
+      if (content.length < 1) {
+        uni.showToast({
+          title: '请输入内容',
+          icon: 'none' });
+
+        return;
+      }
+      this.artList.push({ type: 'text', content: content });
+      console.log(this.artList);
+      this.inputContent = '';
+    },
+    //选择分类
+    cateChange: function cateChange(e) {
+      console.log(e);
+      //获取用户选中的索引
+      var sedIndex = e.detail.value;
+      this.currentCateIndex = sedIndex;
+      if (sedIndex < 1) {
+        return;
+      }
+      var cateName = this.caties[sedIndex];
+      for (var k in this.catiesFromApi) {
+        if (cateName == this.catiesFromApi[k]) {
+          this.sedCateIndex = k;
+        }
+      }
+      this.currentCateIndex = sedIndex;
+    },
+    //添加图片
+    addImg: function addImg() {
+      var _self = this;
+      uni.chooseImage({
+        count: 1, //一次上传一张
+        sizeType: ['compressed'], //压缩
+        success: function success(res) {
+          _self.artList.push({ type: 'image', content: res.tempFilePaths[0] });
+        } });
+
+    },
+    //删除图片
+    removeImg: function removeImg(e) {
+      var _self = this;
+      var sedIndex = e.target.dataset.index;
+      uni.showModal({
+        content: '确定要删除此图片吗',
+        title: '提示',
+        success: function success(e) {
+          if (e.confirm) {
+            _self.artList.splice(sedIndex, 1);
+          }
+        } });
+
+    },
+    deleteText: function deleteText(e) {
+      var _self = this;
+      var sedIndex = e.target.dataset.index;
+      uni.showModal({
+        content: '确定要删除此文本吗',
+        title: '提示',
+        success: function success(e) {
+          if (e.confirm) {
+            _self.artList.splice(sedIndex, 1);
+          }
+        } });
+
+    },
+    submitNow: function submitNow() {
+      //检查提交数据是否符合规则
+      if (this.title.length < 2) {
+        uni.showToast({
+          title: '请输入标题',
+          icon: 'none' });
+
+        return;
+      }
+      if (this.artList.length < 1) {
+        uni.showToast({
+          title: '请填写文章内容',
+          icon: 'none' });
+
+        return;
+      }
+      if (this.sedCateIndex < 1) {
+        uni.showToast({
+          title: '请选择分类',
+          icon: 'none' });
+
+        return;
+      }
+      //整理需要上传的图片
+      this.needUploadImg = [];
+      for (var i = 0; i < this.artList.length; i++) {
+        if (this.artList[i].type == 'image') {
+          this.needUploadImg.push({ tmpurl: this.artList[i].content, indexID: i });
+        }
+      }
+      this.uploadImg();
+    },
+    uploadImg: function uploadImg() {
+      var sign = uni.getStorageSync('sign');
+      _self = this;
+      if (this.needUploadImg.length < 1 || this.uploadIndex >= this.needUploadImg.length) {
+        uni.showLoading({
+          title: '正在提交' });
+
+        uni.request({
+          url: _self.apiServer + 'art&m=add',
+          method: 'POST',
+          header: { 'content-type': 'application/x-www-form-urlencoded' },
+          data: {
+            title: _self.title,
+            content: JSON.stringify(_self.artList),
+            uid: loginRes[0],
+            random: loginRes[1],
+            cate: _self.sedCateIndex,
+            sign: sign },
+
+          success: function success(res) {
+            console.log(res);
+            if (res.data.status == 'ok') {
+              uni.showToast({ title: '提交成功', icon: 'none' });
+              _self.artList = [];
+              // 清空数据
+              signModel.sign(_self.apiServer);
+              // 防止数据缓存
+              _self.currentCateIndex = 0;
+              _self.sedCateIndex = 0;
+              _self.needUploadImg = [];
+              _self.title = '';
+              setTimeout(function () {
+                uni.switchTab({
+                  url: '../my/my' });
+
+              }, 1000);
+            } else {
+              uni.showToast({ title: res.data.data, icon: 'none' });
+            }
+          },
+          fail: function fail() {},
+          complete: function complete() {} });
+
+      } else {
+        uni.showLoading({
+          title: '图片上传中' });
+
+        //将本地临时图片上传到服务器
+        var uploader = uni.uploadFile({
+          url: _self.apiServer + 'uploadImg&m=index',
+          filePath: _self.needUploadImg[_self.uploadIndex].tmpurl,
+          name: 'file',
+          success: function success(uploadFileRes) {
+            console.log(uploadFileRes.data);
+            uploadFileRes = JSON.parse(uploadFileRes.data);
+            if (uploadFileRes.status != 'ok') {
+              uni.showToast({
+                title: '图片上传失败，请重试',
+                icon: 'none' });
+
+              return false;
+            }
+            //将已上传的文件地址赋值给文章数据
+            var index = _self.needUploadImg[_self.uploadIndex].indexID;
+            _self.artList[index].content = _self.staticServer + uploadFileRes.data;
+            _self.uploadIndex++;
+            setTimeout(function () {
+              uni.hideLoading();
+              _self.uploadImg();
+            }, 1000);
+          } });
+
+      }
+    } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ })
 
