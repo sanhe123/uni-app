@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/write/write",
     "pages/my/my",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/editArt/editArt"
   ],
   "subPackages": [],
   "window": {
@@ -38,5 +39,5 @@
   },
   "permission": {},
   "usingComponents": {},
-  "sitemapLocation": "sitemap61.json"
+  "sitemapLocation": "sitemap4.json"
 }

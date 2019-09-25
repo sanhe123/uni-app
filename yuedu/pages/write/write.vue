@@ -6,7 +6,7 @@
 			<block v-for="(item, index) in artList" :key="index">
 				<view class="item" v-if="item.type == 'image'"><image :src="item.content" :data-index="index" mode="widthFix" @tap="removeImg" /></view>
 				<view class="item" v-if="item.type == 'text'">
-					<textarea :value="item.content" placeholder="" v-model="artList[index].content" />
+					<textarea placeholder="" v-model="artList[index].content" />
 					<view :data-index="index" class="deleteText" @tap="deleteText">删除</view>
 				</view>
 			</block>
@@ -35,6 +35,8 @@
 		</view>
 		<!-- 提交按钮 -->
 		<view class="submitNow" v-if="artList.length > 0" @tap="submitNow">发布文章</view>
+		<view>
+</view>
 	</view>
 </template>
 
@@ -59,6 +61,7 @@ export default {
 	},
 	onLoad() {
 		_self = this;
+		signModel.sign(this.apiServer);
 		loginRes = this.checkLogin('../write/write', 2);
 		if (!loginRes) {
 			return;
@@ -190,6 +193,7 @@ export default {
 				uni.showLoading({
 					title: '正在提交'
 				});
+
 				uni.request({
 					url: _self.apiServer + 'art&m=add',
 					method: 'POST',

@@ -67,8 +67,13 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {}
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+}
 var staticRenderFns = []
+render._withStripped = true
 
 
 
@@ -138,9 +143,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 var loginRes, _self;
-var signModel = __webpack_require__(/*! ../../common/js/sign.js */ 40);var _default =
+var signModel = __webpack_require__(/*! ../../common/js/sign.js */ 24);var _default =
 {
   data: function data() {
     return {
@@ -159,6 +166,7 @@ var signModel = __webpack_require__(/*! ../../common/js/sign.js */ 40);var _defa
   },
   onLoad: function onLoad() {
     _self = this;
+    signModel.sign(this.apiServer);
     loginRes = this.checkLogin('../write/write', 2);
     if (!loginRes) {
       return;
@@ -289,6 +297,7 @@ var signModel = __webpack_require__(/*! ../../common/js/sign.js */ 40);var _defa
       if (this.needUploadImg.length < 1 || this.uploadIndex >= this.needUploadImg.length) {
         uni.showLoading({
           title: '正在提交' });
+
 
         uni.request({
           url: _self.apiServer + 'art&m=add',

@@ -11,12 +11,14 @@
 		}, {
 			"path": "pages/my/my",
 			"style": {}
+		}, {
+			"path": "pages/login/login",
+			"style": {}
+		}, {
+			"path": "pages/editArt/editArt",
+			"style": {}
 		}
-	    ,{
-            "path" : "pages/login/login",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "悦读",
@@ -27,7 +29,7 @@
 		"color": "#707070",
 		"selectedColor": "#DE533A",
 		"list": [{
-				"pagePath":"pages/index/index",
+				"pagePath": "pages/index/index",
 				"text": "文章",
 				"iconPath": "static/nav1.png",
 				"selectedIconPath": "static/nav1-a.png"

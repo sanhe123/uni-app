@@ -111,23 +111,121 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
 //
 //
 //
 //
 //
-var _default =
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var _self,
+cate = 0,
+page = 1;var _default =
 {
   data: function data() {
-    return {};
-
+    return {
+      categories: [{ cateId: 0, name: '全部' }],
+      cateCurrentIndex: 0,
+      artList: [] };
 
   },
   onLoad: function onLoad() {
-    var _this = this;
+    _self = this;
+    // 加载文章分类
+    uni.request({
+      url: this.apiServer + 'category&m=index',
+      method: 'GET',
+      success: function success(res) {
+        if (res.data.status == 'ok') {
+          // 把数据格式整理为 picker 支持的格式 ['分类名', ...]
+          var categories = res.data.data;
+          for (var k in categories) {
+            _self.categories.push({ cateId: k, name: categories[k] });
+          }
+          // 记录分类信息
+          _self.catiesFromApi = categories;
+        }
+      } });
+
+    this.getNewsList();
   },
-  methods: {} };exports.default = _default;
+  methods: {
+    tabChange: function tabChange(e) {
+      var index = e.currentTarget.dataset.index;
+      this.cateCurrentIndex = index;
+    },
+    getNewsList: function getNewsList() {
+      _self = this;
+      uni.showLoading({
+        'title': '加载中...' });
+
+      uni.request({
+        url: this.apiServer + 'art&m=getList&cate=' + cate + '&page=' + page,
+        method: 'GET',
+        success: function success(res) {
+          console.log(res);
+          if (res.data.status == 'empty') {
+            uni.showToast({
+              title: '已加载全部新闻',
+              icon: 'none' });
+
+          } else if (res.data.status == 'ok') {
+            var newsList = res.data.data;
+            for (var i = 0; i < newsList.length; i++) {
+              var imgs = [];
+              var content = newsList[i].art_content;
+              for (var ii = 0; ii < content.length; ii++) {
+                if (content[ii].type == 'image') {
+                  imgs.push(content[ii].content);
+                }
+              }
+              newsList[i].art_content = imgs;
+            }
+            _self.artList = _self.artList.concat(newsList);
+            uni.hideLoading();
+            page++;
+          }
+        } });
+
+    } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ })
 ],[[12,"common/runtime","common/vendor"]]]);
