@@ -4,7 +4,8 @@
     "pages/write/write",
     "pages/my/my",
     "pages/login/login",
-    "pages/editArt/editArt"
+    "pages/editArt/editArt",
+    "pages/info/info"
   ],
   "subPackages": [],
   "window": {
@@ -39,5 +40,5 @@
   },
   "permission": {},
   "usingComponents": {},
-  "sitemapLocation": "sitemap4.json"
+  "sitemapLocation": "sitemap22.json"
 }

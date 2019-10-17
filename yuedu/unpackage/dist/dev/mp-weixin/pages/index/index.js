@@ -189,7 +189,12 @@ page = 1;var _default =
   methods: {
     tabChange: function tabChange(e) {
       var index = e.currentTarget.dataset.index;
+      var cateid = e.currentTarget.dataset.cateid;
       this.cateCurrentIndex = index;
+      page = 1;
+      cate = cateid;
+      this.artList = [];
+      this.getNewsList();
     },
     getNewsList: function getNewsList() {
       _self = this;
@@ -208,9 +213,10 @@ page = 1;var _default =
 
           } else if (res.data.status == 'ok') {
             var newsList = res.data.data;
+            console.log(newsList);
             for (var i = 0; i < newsList.length; i++) {
               var imgs = [];
-              var content = newsList[i].art_content;
+              var content = JSON.parse(newsList[i].art_content);
               for (var ii = 0; ii < content.length; ii++) {
                 if (content[ii].type == 'image') {
                   imgs.push(content[ii].content);
@@ -222,9 +228,25 @@ page = 1;var _default =
             uni.hideLoading();
             page++;
           }
+        },
+        complete: function complete() {
+          //加载完成后结束刷新动画
+          uni.stopPullDownRefresh();
         } });
 
-    } } };exports.default = _default;
+    } },
+
+
+  //滚动条至底
+  onReachBottom: function onReachBottom() {
+    this.getNewsList();
+  },
+  //下拉刷新
+  onPullDownRefresh: function onPullDownRefresh() {
+    page = 1;
+    this.artList = [];
+    this.getNewsList();
+  } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ })

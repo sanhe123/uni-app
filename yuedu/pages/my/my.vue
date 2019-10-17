@@ -3,15 +3,15 @@
         <view class="myface"><image :src="myFace" mode="widthFix"></image></view>
         <view class="grace-box-banner" style="margin:30rpx 0;">
             <view class="garce-items">
-              <view class="line1">{{user.artCount}}</text></view>
+              <view class="line1">{{user.artCount?user.artCount:0}}</text></view>
               <view class="line2">文章</view>
             </view>
             <view class="garce-items">
-              <view class="line1">{{user.u_integral}}</text></view>
+              <view class="line1">{{user.u_integral?user.u_integral:0}}</text></view>
               <view class="line2">积分</view>
             </view>
             <view class="garce-items">
-              <view class="line1">{{user.u_remainder}}</text></view>
+              <view class="line1">{{user.u_remainder?user.u_remainder:0}}</text></view>
               <view class="line2">余额</view>
             </view>
             <view class="garce-items">
@@ -51,6 +51,8 @@
 			this.myFace = loginRes[3];
 		},
 		onShow() {
+			loginRes = this.checkLogin('../my/my',2);
+			if(!loginRes){return ;}
 			//加载我的文章
       this.arts = [];
       page = 1;

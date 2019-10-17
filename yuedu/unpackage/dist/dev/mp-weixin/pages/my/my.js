@@ -158,6 +158,8 @@ var loginRes, _self, page;var _default =
     this.myFace = loginRes[3];
   },
   onShow: function onShow() {var _this = this;
+    loginRes = this.checkLogin('../my/my', 2);
+    if (!loginRes) {return;}
     //加载我的文章
     this.arts = [];
     page = 1;
